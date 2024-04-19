@@ -1,0 +1,54 @@
+# We want to combine the reward_is_ahead and reward_is_behind arenas
+
+!ArenaConfig
+arenas:
+  # Lose in this arena
+  0: !Arena
+    timeLimit: 50
+    mergeNextArena: true
+    items:
+    - !Item
+      name: DeathZone
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 25}
+      rotations: [0]
+      sizes:
+      - !Vector3 {x: 1, y: 1, z: 1}
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 20}
+      rotations: [0]
+  # This arena should be skipped
+  1: !Arena
+    timeLimit: 50
+    items:
+    - !Item
+      name: GoodGoal
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 15}
+      rotations: [0]
+      sizes:
+      - !Vector3 {x: 1, y: 1, z: 1}
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 20}
+      rotations: [0]
+      sizes:
+      - !Vector3 {x: 1, y: 1, z: 1}
+  2: !Arena
+    timeLimit: 50
+    items:
+    - !Item
+      name: GoodGoal
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 25}
+      rotations: [0]
+      sizes:
+      - !Vector3 {x: 1, y: 1, z: 1}
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 20}
+      rotations: [0]

@@ -1,0 +1,39 @@
+# This is a user failure case arena where they accidentally put mergeNextArena in the final arena
+# TODO: add tests for user failure cases
+
+!ArenaConfig
+arenas:
+  0: !Arena
+    timeLimitimeLimit: 50
+    mergeNextArena: true
+    items:
+    - !Item
+      name: GoodGoal
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 25}
+      rotations: [0]
+      sizes:
+      - !Vector3 {x: 1, y: 1, z: 1}
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 20}
+      rotations: [0]
+  1: !Arena
+    timeLimitimeLimit: 50
+    mergeNextArena: true
+    items:
+    - !Item
+      name: GoodGoal
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 15}
+      rotations: [0]
+      sizes:
+      - !Vector3 {x: 1, y: 1, z: 1}
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 20}
+      rotations: [0]
+      sizes:
+      - !Vector3 {x: 1, y: 1, z: 1}
