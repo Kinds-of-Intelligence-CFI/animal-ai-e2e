@@ -5,10 +5,13 @@ import time
 import numpy as np
 from mlagents_envs.base_env import ActionTuple, DecisionSteps, TerminalSteps
 from typing import Callable, Optional
+import os
+
+# TODO: reloading the AAI environment takes up most the time - share between tests?
 
 env_path = r"C:\Users\talkt\Documents\Cambridge\MultiArenaEpisodes\animalAIUnity\AnimalAI.exe"
 
-def get_aai_env(configuration_file: str) -> tuple[str, DecisionSteps, TerminalSteps, AnimalAIEnvironment]:
+def get_aai_env(configuration_file: str, no_graphics: bool = True) -> tuple[str, DecisionSteps, TerminalSteps, AnimalAIEnvironment]:
     totalRays = 9
     env = AnimalAIEnvironment(
         file_name=env_path,
@@ -16,6 +19,7 @@ def get_aai_env(configuration_file: str) -> tuple[str, DecisionSteps, TerminalSt
         seed=int(time.time()),
         play=False,
         useCamera=False, #The Braitenberg agent works with raycasts
+        no_graphics=no_graphics,
         useRayCasts=True,
         raysPerSide=int((totalRays-1)/2),
         rayMaxDegrees = 30,
@@ -53,60 +57,20 @@ def run_behaviour_in_aai(configuration_file: str, expected_reward: float, second
         env.step() # Need to make a first step in order to get an observation.
         dec, term = env.get_steps(behavior)
     done = False
-    episodeReward = 0
+    episode_Reward = 0
     while not done:
         if len(dec.reward) > 0:
-            episodeReward += dec.reward
+            episode_Reward += dec.reward
 
         if len(term) > 0:
-            episodeReward += term.reward
+            episode_Reward += term.reward
             done = True
             break
 
-        env.set_actions(behavior, secondary_behaviour(episodeReward))
+        env.set_actions(behavior, secondary_behaviour(episode_Reward))
         env.step()
         dec, term = env.get_steps(behavior)
-    print(f"Episode reward: {episodeReward}")
-    assert abs(episodeReward - expected_reward) < 0.2
+    print(f"Episode reward: {episode_Reward}")
+    assert abs(episode_Reward - expected_reward) < 0.2, f"Unexpected episode reward, got {episode_Reward} but expected {expected_reward}"
 
     env.close()
-
-def test_should_not_merge_if_merge_flag_not_included():
-    run_behaviour_in_aai(
-        r".\testConfigs\testUnmergedArenas.yml",
-        0.8,
-        lambda _ : forwards_action,
-    )
-
-def test_should_merge_if_merge_flag_included():
-    run_behaviour_in_aai(
-        r".\testConfigs\testMergedArenas.yml",
-        1.6,
-        lambda r : backwards_action if r > 0 else forwards_action,
-    )
-
-def test_should_skip_next_merged_arena_if_fails_from_lava():
-    run_behaviour_in_aai(
-        r".\testConfigs\testFailArenas.yml",
-        0.895,
-        lambda _ : forwards_action,
-        forwards_action
-    )
-
-def test_should_skip_next_merged_arena_if_fails_from_timeout():
-    run_behaviour_in_aai(
-        r".\testConfigs\testFailArenas.yml",
-        0.895,
-        lambda _ : forwards_action,
-        nothing_action
-    )
-
-# TODO: reloading the AAI environment takes up most the time - share between tests?
-if __name__ == "__main__":
-    # If we don't include MergeNextArena things work as usual
-    test_should_not_merge_if_merge_flag_not_included()
-    # If we include MergeNextArena both arenas are included in the episode
-    test_should_merge_if_merge_flag_included()
-    # Failure scenarios should not roll into a merged arena
-    test_should_skip_next_merged_arena_if_fails_from_lava()
-    test_should_skip_next_merged_arena_if_fails_from_timeout()
