@@ -9,14 +9,6 @@ Tasks of turning this into a proper test suite (get good coverage over use cases
 
 # TODO
 
-- Move user specific constants to separate file
-- Write proper README
-
-## tests-to-write
-
-- play mode success
-- play mode failure
-- blackout
-- objects
-- training an agent
-- Running with graphics
+- Adding running instructions to README
+- Write play mode tests (success + failure)
+- Run with github actions
