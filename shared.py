@@ -11,14 +11,14 @@ import os
 
 env_path = r"C:\Users\talkt\Documents\Cambridge\MultiArenaEpisodes\animalAIUnity\AnimalAI.exe"
 
-def get_aai_env(configuration_file: str, no_graphics: bool = True) -> tuple[str, DecisionSteps, TerminalSteps, AnimalAIEnvironment]:
+def get_aai_env(configuration_file: str, no_graphics: bool = True, use_Camera: bool  = False, seed: int = int(time.time())) -> tuple[str, DecisionSteps, TerminalSteps, AnimalAIEnvironment]:
     totalRays = 9
     env = AnimalAIEnvironment(
         file_name=env_path,
         arenas_configurations=configuration_file,
-        seed=int(time.time()),
+        seed=seed,
         play=False,
-        useCamera=False, #The Braitenberg agent works with raycasts
+        useCamera=use_Camera,
         no_graphics=no_graphics,
         useRayCasts=True,
         raysPerSide=int((totalRays-1)/2),
