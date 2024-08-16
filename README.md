@@ -5,10 +5,35 @@ This is the package that (hopefully) will eventually become a suite of E2E tests
 
 The tests are written to use pytest (`pip install pytest`), which has default integration in vscode.
 
-Tasks of turning this into a proper test suite (get good coverage over use cases, use a proper testing framework ...) tracked in https://www.notion.so/763741e558da4edb992b199a1233f169?v=da4b83d65c6b4ced81744d180b36001b&p=19c3c7c87da84dd0b42ff38bc2af0350&pm=s
+# Environment variables
+- The location of the AAI executable is specified using the AAI_EXE_PATH environment variable. This might be a release, or a version under development that has been manually built.
+
+- The location of a local copy of the AAI python package can be specified with the LOCAL_PY_ENV_PATH environment variable. If this is not included the E2E tests will default to whatever version of the package is available in the environment
+
+## Example
+
+For example, if I'm developing in the python package in VSCode and I've cloned the python package to "my\python\package\animal-ai-python" and my executable is at "my\executable\path\Animal-AI.exe" I could configure my tests by:
+
+- Creating the file ".vscode\settings.json" if it doesn't exist already and adding the following contents (the key line is `"python.envFile": "${workspaceFolder}/.vscode/.env"
+}`):
+```
+{
+    "python.testing.pytestArgs": [
+        "."
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.envFile": "${workspaceFolder}/.vscode/.env"
+}
+```
+- Creating the file ".vscode\.env" with the following contents:
+```
+AAI_EXE_PATH="my\executable\path\Animal-AI.exe"
+LOCAL_PY_ENV_PATH="my\python\package\animal-ai-python"
+```
 
 # TODO
 
-- Adding running instructions to README
 - Write play mode tests (success + failure)
 - Run with github actions
+- Add a TOML 

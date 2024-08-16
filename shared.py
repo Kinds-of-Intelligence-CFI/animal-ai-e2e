@@ -1,3 +1,9 @@
+import sys
+import os
+LOCAL_PY_ENV_PATH = "LOCAL_PY_ENV_PATH"
+AAI_EXE_PATH = "AAI_EXE_PATH"
+if LOCAL_PY_ENV_PATH in os.environ:
+    sys.path.insert(0, os.environ[LOCAL_PY_ENV_PATH])
 from animalai.environment import AnimalAIEnvironment
 import sys
 import math
@@ -5,11 +11,14 @@ import time
 import numpy as np
 from mlagents_envs.base_env import ActionTuple, DecisionSteps, TerminalSteps
 from typing import Callable, Optional
-import os
 
 # TODO: reloading the AAI environment takes up most the time - share between tests?
 
-env_path = r"C:\Users\talkt\Documents\Cambridge\MultiArenaEpisodes\animalAIUnity\AnimalAI.exe"
+try:
+    env_path = os.environ[AAI_EXE_PATH]
+except KeyError:
+    raise EnvironmentError(f"Environment variable '{AAI_EXE_PATH}' not set")
+print(f"Using env_path: {env_path}")
 
 def get_aai_env(configuration_file: str, no_graphics: bool = True, use_Camera: bool  = False, seed: int = int(time.time())) -> tuple[str, DecisionSteps, TerminalSteps, AnimalAIEnvironment]:
     totalRays = 9
