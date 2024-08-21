@@ -6,7 +6,7 @@ def test_should_merge_if_merge_flag_included():
     run_behaviour_in_aai(
         r".\animal-ai-e2e\testConfigs\testMergedArenas.yml",
         1.6,
-        lambda r : backwards_action if r > 0 else forwards_action,
+        lambda r : backwards_action if r > 0 else forwards_action
     )
 
 # Failure scenarios should not roll into a merged arena
