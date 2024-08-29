@@ -1,7 +1,5 @@
 # Animal-AI E2E
 
-
-
 A suite of End-to-End (E2E) tests for the Animal-AI environment. This package aims to provide a comprehensive suite of E2E tests for use in CI/CD pipelines, ensuring the stability and reliability of the Animal-AI platform.
 
 ## Overview
