@@ -54,7 +54,7 @@ gen_config: Callable[[str], str] = lambda object_name : f"""
 !ArenaConfig
 arenas:
   0: !Arena
-    t: 100
+    timeLimit: 5
     items:
     - !Item
       name: {object_name}

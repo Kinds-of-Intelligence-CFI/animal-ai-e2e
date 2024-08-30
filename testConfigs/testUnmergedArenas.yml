@@ -3,7 +3,7 @@
 !ArenaConfig
 arenas:
   0: !Arena
-    t: 50
+    timeLimit: 50
     items:
     - !Item
       name: GoodGoal
@@ -18,7 +18,7 @@ arenas:
       - !Vector3 {x: 20, y: 0, z: 20}
       rotations: [0]
   1: !Arena
-    t: 50
+    timeLimit: 50
     items:
     - !Item
       name: GoodGoal
