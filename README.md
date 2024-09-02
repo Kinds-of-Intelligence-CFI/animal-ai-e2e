@@ -28,12 +28,7 @@ This repository contains E2E tests for the Animal-AI environment. The tests are 
    cd animal-ai-e2e
    ```
 
-2. Install the required Python packages (to be done later?)
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Set up your environment variables:
+2. Set up your environment variables:
    - `AAI_EXE_PATH`: Path to the Animal-AI executable.
    - `LOCAL_PY_ENV_PATH`: Path to the local copy of the Animal-AI Python package.
 
@@ -71,6 +66,11 @@ Run the tests using pytest:
 pytest
 ```
 
+You can also run a specific test file:
+```bash
+pytest tests/test_general.py
+```
+
 ## Repository TODOs
 
 - Write play mode tests (success + failure)
@@ -79,10 +79,10 @@ pytest
 - Expand test coverage and scenarios
 - Improve documentation with examples and detailed explanations
 
-## Contributing (TODO contributing.md file?)
+## Contributing
 
 We welcome contributions!
 
-## License (TODO?)
+## License
 
 This project is licensed under the MIT License - see the `LICENSE` file for details.
