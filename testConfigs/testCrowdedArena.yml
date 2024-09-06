@@ -2,15 +2,13 @@
 !ArenaConfig
 arenas:
   0: !Arena
-    #pass_mark: 0 # This syntax is only supported for AAI builds less than or equal to v4.0.0. If you are using newer versions, please use the 'passMark' syntax.
-    passMark: 0 # The pass mark for the arena. The agent must achieve this score to pass the arena.
-    #t: 250 # This syntax is only supported for AAI builds less than or equal to v4.0.0. If you are using newer versions, please use the 'timeLimit' syntax.
-    timeLimit: 250 # The time limit for the arena in seconds. In other words, the time limit for the agent to complete the task (the arena resets after this time).
-    items:  # This line indicates the start of the items list
+    passMark: 0
+    timeLimit: 250
+    items:
     - !Item 
-      name: Agent # Note that the agent will always be spawned first regardless of its position in the configuration.
+      name: Agent
       positions:
-      - !Vector3 {x: 2, y: 1, z: 2}   # The position of the item. This is a Vector3 object with x, y, and z coordinates. Leave values for random spawning.
+      - !Vector3 {x: 2, y: 0, z: 2}   # The position of the item. This is a Vector3 object with x, y, and z coordinates. Leave values for random spawning.
       rotations: [0] # The rotations of the items. It can be in any angle but default is 0 degrees.
 
 # IMMOVABLE OBJECTS (Note: RAMP is 'Immovable' but has a special tag of "ramp" for the agent to detect).
@@ -18,94 +16,92 @@ arenas:
     - !Item
       name: CylinderTunnel
       positions:
-      - !Vector3 {x: 37, y: 2, z: 37}
+      - !Vector3 {x: 37, y: 0, z: 37}
       rotations: [0]
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
       colors:
       - !RGB {r: 255, g: 0, b: 255}
 
     - !Item
       name: CylinderTunnelTransparent
       positions:
-      - !Vector3 {x: 27, y: 17, z: 36}
+      - !Vector3 {x: 27, y: 0, z: 36}
       rotations: [0]
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
       colors:
       - !RGB {r: 255, g: 0, b: 255}
 
     - !Item
       name: Ramp
       positions:
-      - !Vector3 {x: 8, y: 20, z: 39}
+      - !Vector3 {x: 8, y: 0, z: 39}
       rotations: [0]
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
       colors:
       - !RGB {r: 255, g: 0, b: 255}
       
     - !Item
       name: Wall
       positions:
-      - !Vector3 {x: 19, y: 23, z: 2}
+      - !Vector3 {x: 19, y: 0, z: 2}
       rotations: [0]
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
       colors:
       - !RGB {r: 255, g: 0, b: 255}
 
     - !Item
       name: WallTransparent
       positions:
-      - !Vector3 {x: 16, y: 12, z: 24}
+      - !Vector3 {x: 16, y: 0, z: 24}
       rotations: [0]
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
       colors:
       - !RGB {r: 255, g: 0, b: 255}
-
-# MOVABLE OBJECTS 
 
     - !Item
       name: HeavyBlock
       positions:
-      - !Vector3 {x: 18, y: 34, z: 23}
+      - !Vector3 {x: 18, y: 0, z: 23}
       rotations: [0]
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: LightBlock
       positions:
-      - !Vector3 {x: 34, y: 25, z: 10}
+      - !Vector3 {x: 34, y: 0, z: 10}
       rotations: [0]
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: JBlock
       positions:
-      - !Vector3 {x: 22, y: 31, z: 22}
+      - !Vector3 {x: 22, y: 0, z: 22}
       rotations: [0]
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: LBlock
       positions:
-      - !Vector3 {x: 29, y: 7, z: 32}
+      - !Vector3 {x: 29, y: 0, z: 32}
       rotations: [0]
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: UBlock
       positions:
-      - !Vector3 {x: 22, y: 33, z: 34}
+      - !Vector3 {x: 22, y: 0, z: 34}
       rotations: [0]
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: HollowBox
@@ -113,17 +109,15 @@ arenas:
       - !Vector3 {x: 10, y: 0, z: 10}
       rotations: [0]
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
-
-# SIGNBOARD
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: SignBoard
       positions:
-      - !Vector3 {x: 39, y: 18, z: 27}
+      - !Vector3 {x: 39, y: 0, z: 27}
       rotations: [0]
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
       symbolNames:
       - default # this is the default symbol that will be displayed if not changed in this parameter (blank signboard).
       # The list of symbols that can be used are: "transparent", "right-arrow", "left-arrow", "up-arrow", "down-arrow",
@@ -138,7 +132,7 @@ arenas:
     - !Item
       name: SpawnerButton # Interactive button that spawns rewards when pressed by the agent.
       positions:
-      - !Vector3 {x: 32, y: 31, z: 30}
+      - !Vector3 {x: 32, y: 0, z: 30}
       rotations: [0]
       sizes:
       - !Vector3 {x: 1, y: 1, z: 1}
@@ -153,10 +147,10 @@ arenas:
     - !Item
       name: SpawnerDispenserTall
       positions:
-      - !Vector3 {x: 10, y: 39, z: 38}
+      - !Vector3 {x: 10, y: 0, z: 38}
       rotations: [0]
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
       colors:
       - !RGB {r: 255, g: 0, b: 255}
       initialValues: [2.5]
@@ -168,10 +162,10 @@ arenas:
     - !Item
       name: SpawnerContainerShort
       positions:
-      - !Vector3 {x: 16, y: 28, z: 30}
+      - !Vector3 {x: 16, y: 0, z: 30}
       rotations: [0]
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
       colors:
       - !RGB {r: 255, g: 0, b: 255}
       initialValues: [2.5]
@@ -183,10 +177,10 @@ arenas:
     - !Item
       name: SpawnerTree
       positions:
-      - !Vector3 {x: 1, y: 15, z: 2}
+      - !Vector3 {x: 1, y: 0, z: 2}
       rotations: [0]
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
       initialValues: [2.5]
       finalValues: [0.5]
       ripenTimes: [4.0]
@@ -198,112 +192,111 @@ arenas:
     - !Item
       name: GoodGoal
       positions:
-      - !Vector3 {x: 35, y: 15, z: 9}
+      - !Vector3 {x: 35, y: 0, z: 9}
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
     - !Item
       name: GoodGoalBounce
       positions:
       - !Vector3 {x: 7, y: 0, z: 5}
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: BadGoal
       positions:
-      - !Vector3 {x: 25, y: 39, z: 8}
+      - !Vector3 {x: 25, y: 0, z: 8}
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: BadGoalBounce
       positions:
-      - !Vector3 {x: 20, y: 37, z: 14}
+      - !Vector3 {x: 20, y: 0, z: 14}
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: GoodGoalMulti
       positions:
-      - !Vector3 {x: 12, y: 22, z: 33}
+      - !Vector3 {x: 12, y: 0, z: 33}
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: GoodGoalMultiBounce
       positions:
-      - !Vector3 {x: 4, y: 22, z: 13}
+      - !Vector3 {x: 4, y: 0, z: 13}
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: BadGoalMulti
       positions:
-      - !Vector3 {x: 12, y: 40, z: 5}
+      - !Vector3 {x: 12, y: 0, z: 5}
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: BadGoalMultiBounce
       positions:
-      - !Vector3 {x: 16, y: 5, z: 31}
+      - !Vector3 {x: 16, y: 0, z: 31}
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: RipenGoal
       positions:
-      - !Vector3 {x: 38, y: 25, z: 11}
+      - !Vector3 {x: 38, y: 0, z: 11}
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: DecayGoal
       positions:
-      - !Vector3 {x: 5, y: 16, z: 29}
+      - !Vector3 {x: 5, y: 0, z: 29}
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: DecoyGoal
       positions:
-      - !Vector3 {x: 4, y: 14, z: 23}
+      - !Vector3 {x: 4, y: 0, z: 23}
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: DecayGoalBounce
       positions:
-      - !Vector3 {x: 6, y: 22, z: 40}
+      - !Vector3 {x: 6, y: 0, z: 40}
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: GrowGoal
       positions: 
-      - !Vector3 {x: 3, y: 20, z: 38}
+      - !Vector3 {x: 3, y: 0, z: 38}
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: ShrinkGoal
       positions:
-      - !Vector3 {x: 9, y: 26, z: 16}
+      - !Vector3 {x: 9, y: 0, z: 16}
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
 # ZONES
     - !Item
       name: HotZone
       positions:
-      - !Vector3 {x: 1, y: 18, z: 36}
+      - !Vector3 {x: 1, y: 0, z: 36}
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
+      - !Vector3 {x: 1, y: 0, z: 1}
 
     - !Item
       name: DeathZone
       positions:
-      - !Vector3 {x: 14, y: 34, z: 18}
+      - !Vector3 {x: 14, y: 0, z: 18}
       sizes:
-      - !Vector3 {x: 1, y: 1, z: 1}
-
+      - !Vector3 {x: 1, y: 0, z: 1}
