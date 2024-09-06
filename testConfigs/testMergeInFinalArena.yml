@@ -4,7 +4,7 @@
 !ArenaConfig
 arenas:
   0: !Arena
-    timeLimitimeLimit: 50
+    timeLimit: 50
     mergeNextArena: true
     items:
     - !Item
@@ -20,7 +20,7 @@ arenas:
       - !Vector3 {x: 20, y: 0, z: 20}
       rotations: [0]
   1: !Arena
-    timeLimitimeLimit: 50
+    timeLimit: 50
     mergeNextArena: true
     items:
     - !Item
