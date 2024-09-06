@@ -12,7 +12,7 @@ A suite of End-to-End (E2E) tests for the Animal-AI environment. This package ai
 
 ### Prerequisites
 
-- Python 3.7 or higher (shall we aim for at least 3.9 or 3.10?)
+- Python 3.9+
 - [pytest](https://docs.pytest.org/en/stable/) for running tests
 - VSCode for integrated development (optional but recommended)
 
