@@ -8,10 +8,12 @@ _Describe the changes made in this PR._
 
 ### Types of change(s)
 - [ ] Added new tests (please specify which tests)
-- [ ] Confirmed my new tests pass on the most recent release of AAI
-- [ ] Updated screenshots in screenshot tests if necessary
+- [ ] Modified existing tests (please specify which tests)
+- [ ] Other (please specify)
 
 ### Checklist
+- [ ] Updated screenshots in screenshot tests if necessary
+- [ ] Confirmed my new tests pass on the most recent release of AAI
 - [ ] Updated the changelog (if applicable)
 
 ### Other comments (if any)
