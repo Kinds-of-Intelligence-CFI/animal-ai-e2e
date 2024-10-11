@@ -1,12 +1,15 @@
 # Animal-AI E2E
 
-A suite of End-to-End (E2E) tests for the Animal-AI environment. This package aims to provide a suite of E2E tests for use in CI/CD pipelines, ensuring the stability and reliability of the Animal-AI platform.
+#### Table of Contents
+- [Installation](#installation)
+  - [Prerequisites](#prerequisites)
+  - [Setup](#setup)
+- [Configuration](#configuration)
+  - [VSCode Configuration](#vscode-configuration)
+  - [Environment Variables](#environment-variables)
+- [Usage](#usage)
 
-## Features
-
-- Automated E2E (end-to-end) testing with Python's pytest package
-- Configurable environment variables for flexible test setup
-- Plans for play mode tests and CI integration
+A suite of End-to-End (E2E) tests for the Animal-AI environment. This package aims to provide a suite of E2E tests for use in CI/CD pipelines with Python pytest package, ensuring the stability and reliability of the Animal-AI platform.
 
 ## Installation
 
@@ -62,7 +65,7 @@ Run the tests using pytest:
 pytest
 ```
 
-You can also run a specific test file:
+You can also run a specific test file, i.e., `test_general.py`:
 ```bash
 pytest tests/test_general.py
 ```
