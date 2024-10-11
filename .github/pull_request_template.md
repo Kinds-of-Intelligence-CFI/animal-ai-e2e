@@ -7,10 +7,9 @@ _Why was this PR produced? Give detailed reasons for your PR._
 _Describe the changes made in this PR._
 
 ### Types of change(s)
-- [ ] Bug fix
-- [ ] Code refactor
-- [ ] Added New Test Script(s)
-- [ ] Other (please describe)
+- [ ] Added new tests (please specify which tests)
+- [ ] Confirmed my new tests pass on the most recent release of AAI
+- [ ] Updated screenshots in screenshot tests if necessary
 
 ### Checklist
 - [ ] Updated the changelog (if applicable)
