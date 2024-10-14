@@ -72,8 +72,8 @@ pytest tests/test_general.py
 
 ## Repository TODOs
 
-- Write play mode tests (success + failure)
-- Integrate with GitHub Actions for CI/CD
-- Add a TOML configuration file
-- Expand test coverage and scenarios
-- Improve documentation with examples and detailed explanations
+- [x] Write play mode tests (success + failure)
+- [ ] Integrate with GitHub Actions for CI/CD
+- [ ] Add a TOML configuration file
+- [ ] Expand test coverage and scenarios
+- [ ] Improve documentation with examples and detailed explanations
