@@ -114,6 +114,8 @@ def run_screenshot_test(
     )
     try:
         camera_output = env.get_obs_dict(dec.obs)['camera']
+        # Unity outputs image dimensions in a different order to those expected by Image, so transpose so we can view
+        camera_output = np.transpose(camera_output, (1, 2, 0))
         if update_screenshot:
             # Warning! If we e.g. add an item to the crowded arena config we may need to update this config
             with open(expected_screenshot_path, 'wb') as file:
