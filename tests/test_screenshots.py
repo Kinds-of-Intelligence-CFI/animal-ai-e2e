@@ -3,17 +3,16 @@ from typing import Callable
 import pytest
 import os
 
-# - Test blackout works
-
+"""
+This test validates three things: 
+- We can load a config with many objects (if arena doesn't load we have failed this)
+- Test if blackout camera works (i.e. a basic screenshot test)
+- Visual inputs work (i.e. a basic screenshot test)
+"""
 def test_objects_blackout_camera():
-    """
-    This test validates two things
-    - We can load a config with many objects (if arena doesn't load we have failed this)
-    - Visual inputs work (i.e. a basic screenshot test)
-    """
     run_screenshot_test(
-        r"C:\Users\talkt\Documents\Cambridge\AAI_dev\improving_screenshot_tests\animal-ai-e2e\testConfigs\testCrowdedArena.yml",
-        r".\animal-ai-e2e\data\datascreenshottest.pickle",
+        os.path.join(".", "testConfigs", "testCrowdedArena.yml"),
+        os.path.join(".", "data", "datascreenshottest.pickle"),
         test_name="crowded_arena"
     )
 
@@ -79,7 +78,7 @@ def test_single_item_screenshot_test(item_name: str):
             file.write(config_content)
         run_screenshot_test(
             config_file_name,
-            rf".\animal-ai-e2e\data\{item_name}_screenshot_test.pickle",
+            os.path.join(".", "data", f"{item_name}_screenshot_test.pickle"),
             test_name=item_name
         )
     finally:

@@ -45,7 +45,7 @@ def get_aai_env(
         timescale=timescale,
         resolution = 512
     )
-    behavior = list(env.behavior_specs.keys())[0] # by default should be AnimalAI?team=0
+    behavior = list(env.behavior_specs.keys())[0] # Get the first behavior name
     env.step() # Need to make a first step in order to get an observation.
     dec, term = env.get_steps(behavior)
     return behavior, dec, term, env
@@ -117,7 +117,7 @@ def run_screenshot_test(
         # Unity outputs image dimensions in a different order to those expected by Image, so transpose so we can view
         camera_output = np.transpose(camera_output, (1, 2, 0))
         if update_screenshot:
-            # If we e.g. add an item to the crowded arena config we may need to update this config
+            # Warning! If we e.g. add an item to the crowded arena config we may need to update this config
             with open(expected_screenshot_path, 'wb') as file:
                 pickle.dump(camera_output, file)
     finally:

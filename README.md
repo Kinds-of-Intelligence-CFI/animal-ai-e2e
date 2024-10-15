@@ -1,22 +1,43 @@
-# animal-ai-e2e
-A suite of E2E tests for AAI.
+# Animal-AI E2E
 
-This is the package that (hopefully) will eventually become a suite of E2E tests we can use in CI/CD for Animal-AI.
+#### Table of Contents
+- [Installation](#installation)
+  - [Prerequisites](#prerequisites)
+  - [Setup](#setup)
+- [Configuration](#configuration)
+  - [VSCode Configuration](#vscode-configuration)
+  - [Environment Variables](#environment-variables)
+- [Usage](#usage)
 
-The tests are written to use pytest (`pip install pytest`), which has default integration in vscode.
+A suite of End-to-End (E2E) tests for the Animal-AI environment. This package aims to provide a suite of E2E tests for use in CI/CD pipelines with Python pytest package, ensuring the stability and reliability of the Animal-AI platform.
 
-# Environment variables
-- The location of the AAI executable is specified using the AAI_EXE_PATH environment variable. This might be a release, or a version under development that has been manually built.
+## Installation
 
-- The location of a local copy of the AAI python package can be specified with the LOCAL_PY_ENV_PATH environment variable. If this is not included the E2E tests will default to whatever version of the package is available in the environment
+### Prerequisites
 
-## Example
+- Python 3.10+
+- [pytest](https://docs.pytest.org/en/stable/) for running tests
+- VSCode for integrated development (optional but recommended)
 
-For example, if I'm developing in the python package in VSCode and I've cloned the python package to "my\python\package\animal-ai-python" and my executable is at "my\executable\path\Animal-AI.exe" I could configure my tests by:
+### Setup
 
-- Creating the file ".vscode\settings.json" if it doesn't exist already and adding the following contents (the key line is `"python.envFile": "${workspaceFolder}/.vscode/.env"
-}`):
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Kinds-of-Intelligence-CFI/animal-ai-e2e.git
+   cd animal-ai-e2e
+   ```
+
+2. Set up your environment variables:
+   - `AAI_EXE_PATH`: Path to the Animal-AI executable.
+   - `LOCAL_PY_ENV_PATH`: Path to the local copy of the Animal-AI Python package.
+
+## Configuration
+
+### VSCode Configuration
+
+To streamline development in VSCode, you can create a `.vscode/settings.json` file with the following content:
+
+```json
 {
     "python.testing.pytestArgs": [
         "."
@@ -26,14 +47,33 @@ For example, if I'm developing in the python package in VSCode and I've cloned t
     "python.envFile": "${workspaceFolder}/.vscode/.env"
 }
 ```
-- Creating the file ".vscode\.env" with the following contents:
-```
-AAI_EXE_PATH="my\executable\path\Animal-AI.exe"
-LOCAL_PY_ENV_PATH="my\python\package\animal-ai-python"
+
+### Environment Variables
+
+Create a `.vscode/.env` file to specify the required environment variables:
+
+```env
+AAI_EXE_PATH="my/executable/path/Animal-AI.exe"
+LOCAL_PY_ENV_PATH="my/python/package/animal-ai-python"
 ```
 
-# TODO
+## Usage
 
-- Write play mode tests (success + failure)
-- Run with github actions
-- Add a TOML 
+Run the tests using pytest:
+
+```bash
+pytest
+```
+
+You can also run a specific test file, i.e., `test_general.py`:
+```bash
+pytest tests/test_general.py
+```
+
+## Repository TODOs
+
+- [x] Write play mode tests (success + failure)
+- [ ] Integrate with GitHub Actions for CI/CD
+- [ ] Add a TOML configuration file
+- [ ] Expand test coverage and scenarios
+- [ ] Improve documentation with examples and detailed explanations
