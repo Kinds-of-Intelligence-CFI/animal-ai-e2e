@@ -1,4 +1,5 @@
 import os
+import random
 from datetime import datetime
 from typing import Union, Literal, List
 
@@ -50,6 +51,37 @@ def compare_lines_by_indices(
     return True
 
 
+def compare_csv_file(
+    template_path: str, lines_to_compare: List[int]
+) -> Union[Literal[True], str]:
+    current_time = datetime.now()
+    expected_filename = f"Observations_{current_time.strftime('%d-%m-%y_%H%M')}.csv"
+
+    try:
+        env_dir_path = os.path.dirname(os.environ[AAI_EXE_PATH])
+        csv_path = os.path.join(env_dir_path, "ObservationLogs", expected_filename)
+    except KeyError as exc:
+        raise EnvironmentError(
+            f"Environment variable '{AAI_EXE_PATH}' not set"
+        ) from exc
+    print(f"CSV path guess: {csv_path}")
+
+    comp = compare_lines_by_indices(csv_path, template_path, lines_to_compare)
+
+    # AAI might overwrite CSV files written in the same minute, so tidy up the file
+    if comp is True:
+        os.remove(csv_path)
+    else:
+        random_suffix = random.randint(
+            0, 999
+        )  # In case two tests fail in the same minute
+        file_name, file_ext = os.path.splitext(csv_path)
+        new_path = f"{file_name}_failed_{random_suffix}{file_ext}"
+        os.rename(csv_path, new_path)
+
+    return comp
+
+
 def test_basic_csv_creation():
     """
     Tests that a .csv data file is created, and that it has the expected contents
@@ -59,22 +91,28 @@ def test_basic_csv_creation():
         0.8,
         lambda _: forwards_action,
     )
-    current_time = datetime.now()
-    expected_filename = f"Observations_{current_time.strftime('%d-%m-%y_%H%M')}.csv"
-
-    try:
-        env_dir_path = os.path.dirname(os.environ[AAI_EXE_PATH])
-        csv_path = os.path.join(env_dir_path, "ObservationLogs", expected_filename)
-    except KeyError:
-        raise EnvironmentError(f"Environment variable '{AAI_EXE_PATH}' not set")
-    print(f"CSV path guess: {csv_path}")
-
-    comp = compare_lines_by_indices(
-        csv_path,
-        os.path.join(".", "data", "Template_observations.csv"),
+    comp = compare_csv_file(
+        os.path.join(".", "data", "csv_tests", "Template_observations.csv"),
         # Even though we're only testing one episode, there's a second episode of a few frames that hangs over
         # As the number of hangover frames is variable, only check the final 'Goals Collected' line
         list(range(31)) + [-1],
+    )
+
+    assert isinstance(comp, bool), "CSV comparison failed" + comp
+
+
+def test_datazones():
+    """
+    Tests that datazones produce the expected output
+    """
+    run_behaviour_in_aai(
+        os.path.join(".", "testConfigs", "testDatazone.yml"),
+        0.8,
+        lambda _: forwards_action,
+    )
+    comp = compare_csv_file(
+        os.path.join(".", "data", "csv_tests", "Template_datazones.csv"),
+        list(range(89)),
     )
 
     assert isinstance(comp, bool), "CSV comparison failed" + comp
