@@ -54,12 +54,11 @@ def compare_lines_by_indices(
 def compare_csv_file(
     template_path: str, lines_to_compare: List[int]
 ) -> Union[Literal[True], str]:
-    current_time = datetime.now()
-    expected_filename = f"Observations_{current_time.strftime('%d-%m-%y_%H%M')}.csv"
-
     try:
-        env_dir_path = os.path.dirname(os.environ[AAI_EXE_PATH])
-        csv_path = os.path.join(env_dir_path, "ObservationLogs", expected_filename)
+        csv_files_dir_path = os.path.join(os.path.dirname(os.environ[AAI_EXE_PATH]), "ObservationLogs")
+        files = [os.path.join(csv_files_dir_path, f) for f in os.listdir(csv_files_dir_path) if os.path.isfile(os.path.join(csv_files_dir_path, f))]
+        expected_filename = max(files, key=os.path.getmtime)
+        csv_path = os.path.join(csv_files_dir_path, expected_filename)
     except KeyError as exc:
         raise EnvironmentError(
             f"Environment variable '{AAI_EXE_PATH}' not set"
