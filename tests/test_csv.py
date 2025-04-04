@@ -52,7 +52,7 @@ def compare_lines_by_indices(
 
 
 def compare_csv_file(
-    template_path: str, lines_to_compare: List[int]
+    template_path: str, lines_to_compare: List[int], tidy_up_csv = True
 ) -> Union[Literal[True], str]:
     try:
         csv_files_dir_path = os.path.join(os.path.dirname(os.environ[AAI_EXE_PATH]), "ObservationLogs")
@@ -68,15 +68,16 @@ def compare_csv_file(
     comp = compare_lines_by_indices(csv_path, template_path, lines_to_compare)
 
     # AAI might overwrite CSV files written in the same minute, so tidy up the file
-    if comp is True:
-        os.remove(csv_path)
-    else:
-        random_suffix = random.randint(
-            0, 999
-        )  # In case two tests fail in the same minute
-        file_name, file_ext = os.path.splitext(csv_path)
-        new_path = f"{file_name}_failed_{random_suffix}{file_ext}"
-        os.rename(csv_path, new_path)
+    if tidy_up_csv:
+        if comp is True:
+            os.remove(csv_path)
+        else:
+            random_suffix = random.randint(
+                0, 999
+            )  # In case two tests fail in the same minute
+            file_name, file_ext = os.path.splitext(csv_path)
+            new_path = f"{file_name}_failed_{random_suffix}{file_ext}"
+            os.rename(csv_path, new_path)
 
     return comp
 
@@ -115,3 +116,26 @@ def test_datazones():
     )
 
     assert isinstance(comp, bool), "CSV comparison failed" + comp
+
+def test_overlapping_datazones_should_combine_messages():
+    """
+    Tests that overlapping datazones don't interfere with one another
+    """
+    run_behaviour_in_aai(
+        os.path.join(".", "testConfigs", "testDatazoneOverlap.yml"),
+        0.8,
+        lambda _: forwards_action,
+    )
+    # Check all possible orders of writing from the data zones since we have a race condition
+    file_names = [f"Template_overlappingDatazonesShouldCombineMessages_{i}.csv" for i in range(1,5)]
+    comps = [
+        compare_csv_file(
+            os.path.join(".", "data", "csv_tests", file_name),
+            list(range(44)),
+            # Only tidy up the file on the last comparison
+            tidy_up_csv=(False if i != 4 else True)
+        ) for i, file_name in enumerate(file_names)
+    ]
+
+
+    assert any(isinstance(comp, bool) for comp in comps), "CSV comparison failed" + "\n" + "\n".join([str(comp) for comp in comps])
