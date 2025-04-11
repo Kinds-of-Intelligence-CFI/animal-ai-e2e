@@ -46,10 +46,22 @@ test_configs = [
     "SpawnerDispenserTall",
     "SpawnerContainerShort",
     "SpawnerButton",
-    "SignPosterboard"
+    "SignPosterboard",
+    "DataZone",
+    ("DataZone", {"zoneVisibility": "false"})
 ]
 
-gen_config: Callable[[str], str] = lambda object_name : f"""
+def unpack_extra_args(d: dict[str, str]):
+    if not d:  # Check if dictionary is empty
+        return ""
+
+    result = "\n"
+    for key, value in d.items():
+        result += f"      {key}: {value}\n"
+
+    return result
+
+gen_config: Callable[[str, dict[str, str]], str] = lambda object_name, optional_args : f"""
 !ArenaConfig
 arenas:
   0: !Arena
@@ -61,7 +73,7 @@ arenas:
       - !Vector3 {{x: 20, y: 0, z: 20}}
       rotations: [0]
       sizes:
-      - !Vector3 {{x: 1, y: 1, z: 1}}
+      - !Vector3 {{x: 1, y: 1, z: 1}}{unpack_extra_args(optional_args)}
     - !Item
       name: Agent
       positions:
@@ -69,17 +81,29 @@ arenas:
       rotations: [270]
 """
 
-@pytest.mark.parametrize('item_name', test_configs)
-def test_single_item_screenshot_test(item_name: str):
-    config_content = gen_config(item_name)
-    config_file_name = f"screenshot_test_config_{item_name}.yml"
+def get_test_name(item: str | tuple[str, dict[str, str]]) -> str:
+    if isinstance(item, tuple):
+        item_name, args = item
+        return f"{item_name}_{'_'.join(f'{k}_{v}' for k, v in args.items())}"
+    else:
+        return item
+
+@pytest.mark.parametrize('item', test_configs, ids=get_test_name)
+def test_single_item_screenshot_test(item: str | tuple[str, dict[str, str]]):
+    test_name = get_test_name(item)
+    if isinstance(item, tuple):
+        item_name, args = item
+    else:
+        item_name, args = item, {}
+    config_content = gen_config(item_name, args)
+    config_file_name = f"screenshot_test_config_{test_name}.yml"
     try:
         with open(config_file_name, "w") as file:
             file.write(config_content)
         run_screenshot_test(
             config_file_name,
-            os.path.join(".", "data", f"{item_name}_screenshot_test.pickle"),
-            test_name=item_name
+            os.path.join(".", "data", f"{test_name}_screenshot_test.pickle"),
+            test_name=test_name
         )
     finally:
         os.remove(config_file_name)
