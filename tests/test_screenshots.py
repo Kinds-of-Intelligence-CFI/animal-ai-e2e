@@ -18,8 +18,10 @@ def test_objects_blackout_camera():
 
 test_configs = [
     "Wall",
+    ("Wall", {"colors": "\n      - !RGB {r: 137, g: 207, b: 240}"}),
     "WallTransparent",
     "Ramp",
+    ("Ramp", {"colors": "\n      - !RGB {r: 137, g: 207, b: 240}"}),
     "CylinderTunnel",
     "LightBlock",
     "HeavyBlock",
@@ -84,7 +86,7 @@ arenas:
 def get_test_name(item: str | tuple[str, dict[str, str]]) -> str:
     if isinstance(item, tuple):
         item_name, args = item
-        return f"{item_name}_{'_'.join(f'{k}_{v}' for k, v in args.items())}"
+        return f"{item_name}_{'_'.join(f'{k}' for k in args.keys())}"
     else:
         return item
 
