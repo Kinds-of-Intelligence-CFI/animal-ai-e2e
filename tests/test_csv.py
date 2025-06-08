@@ -52,11 +52,17 @@ def compare_lines_by_indices(
 
 
 def compare_csv_file(
-    template_path: str, lines_to_compare: List[int], tidy_up_csv = True
+    template_path: str, lines_to_compare: List[int], tidy_up_csv=True
 ) -> Union[Literal[True], str]:
     try:
-        csv_files_dir_path = os.path.join(os.path.dirname(os.environ[AAI_EXE_PATH]), "ObservationLogs")
-        files = [os.path.join(csv_files_dir_path, f) for f in os.listdir(csv_files_dir_path) if os.path.isfile(os.path.join(csv_files_dir_path, f))]
+        csv_files_dir_path = os.path.join(
+            os.path.dirname(os.environ[AAI_EXE_PATH]), "ObservationLogs"
+        )
+        files = [
+            os.path.join(csv_files_dir_path, f)
+            for f in os.listdir(csv_files_dir_path)
+            if os.path.isfile(os.path.join(csv_files_dir_path, f))
+        ]
         expected_filename = max(files, key=os.path.getmtime)
         csv_path = os.path.join(csv_files_dir_path, expected_filename)
     except KeyError as exc:
@@ -117,6 +123,7 @@ def test_datazones():
 
     assert isinstance(comp, bool), "CSV comparison failed" + comp
 
+
 def test_overlapping_datazones_should_combine_messages():
     """
     Tests that overlapping datazones don't interfere with one another
@@ -125,17 +132,23 @@ def test_overlapping_datazones_should_combine_messages():
         os.path.join(".", "testConfigs", "testDatazoneOverlap.yml"),
         0.8,
         lambda _: forwards_action,
+        watch=True,
     )
     # Check all possible orders of writing from the data zones since we have a race condition
-    file_names = [f"Template_overlappingDatazonesShouldCombineMessages_{i}.csv" for i in range(1,5)]
+    file_names = [
+        f"Template_overlappingDatazonesShouldCombineMessages_{i}.csv"
+        for i in range(1, 5)
+    ]
     comps = [
         compare_csv_file(
             os.path.join(".", "data", "csv_tests", file_name),
             list(range(44)),
             # Only tidy up the file on the last comparison
-            tidy_up_csv=(False if i != 4 else True)
-        ) for i, file_name in enumerate(file_names)
+            tidy_up_csv=(False if i != 4 else True),
+        )
+        for i, file_name in enumerate(file_names)
     ]
 
-
-    assert any(isinstance(comp, bool) for comp in comps), "CSV comparison failed" + "\n" + "\n".join([str(comp) for comp in comps])
+    assert any(isinstance(comp, bool) for comp in comps), (
+        "CSV comparison failed" + "\n" + "\n".join([str(comp) for comp in comps])
+    )
