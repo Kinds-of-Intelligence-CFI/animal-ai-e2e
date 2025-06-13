@@ -143,6 +143,6 @@ def run_screenshot_test(
         camera_output_image.save(os.path.join(dump_dir_name, f"Observed_{test_name}.png"))
         difference_image.save(os.path.join(dump_dir_name, f"Difference_{test_name}.png"))
         # Save pickle file for debugging
-        with open(os.path.join(dump_dir_name, f"Observed_{test_name}.pickle"), 'wb') as f:
+        with open(os.path.join(dump_dir_name, f"{test_name}_screenshot_test.pickle"), 'wb') as f:
             pickle.dump(camera_output, f)
         raise e
