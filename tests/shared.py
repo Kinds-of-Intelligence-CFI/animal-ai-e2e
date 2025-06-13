@@ -134,7 +134,15 @@ def run_screenshot_test(
         expected_camera_output_image = Image.fromarray(expected_camera_output_scaled)
         camera_output_image = Image.fromarray(camera_output_scaled)
         difference_image = Image.fromarray(expected_camera_output_scaled - camera_output_scaled)
-        expected_camera_output_image.save(f"Expected_{test_name}.png")
-        camera_output_image.save(f"Observed_{test_name}.png")
-        difference_image.save(f"Difference_{test_name}.png")
+        
+        # Create directory if it doesn't exist
+        dump_dir_name = f"{test_name}_screenshot_test_dump"
+        os.makedirs(dump_dir_name, exist_ok=True)
+        
+        expected_camera_output_image.save(os.path.join(dump_dir_name, f"Expected_{test_name}.png"))
+        camera_output_image.save(os.path.join(dump_dir_name, f"Observed_{test_name}.png"))
+        difference_image.save(os.path.join(dump_dir_name, f"Difference_{test_name}.png"))
+        # Save pickle file for debugging
+        with open(os.path.join(dump_dir_name, f"Observed_{test_name}.pickle"), 'wb') as f:
+            pickle.dump(camera_output, f)
         raise e
