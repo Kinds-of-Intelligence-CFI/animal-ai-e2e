@@ -63,8 +63,7 @@ def compare_csv_file(
             for f in os.listdir(csv_files_dir_path)
             if os.path.isfile(os.path.join(csv_files_dir_path, f))
         ]
-        expected_filename = max(files, key=os.path.getmtime)
-        csv_path = os.path.join(csv_files_dir_path, expected_filename)
+        csv_path = max(files, key=os.path.getmtime)
     except KeyError as exc:
         raise EnvironmentError(
             f"Environment variable '{AAI_EXE_PATH}' not set"
