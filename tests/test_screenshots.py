@@ -1,7 +1,13 @@
-from shared import run_screenshot_test
+from shared import run_screenshot_test, E2E_TEST_PLATFORM
 from typing import Callable
 import pytest
 import os
+
+
+try:
+    platform = os.environ[E2E_TEST_PLATFORM]
+except KeyError:
+    raise EnvironmentError(f"Environment variable '{E2E_TEST_PLATFORM}' not set")
 
 """
 This test validates three things: 
@@ -104,7 +110,7 @@ def test_single_item_screenshot_test(item: str | tuple[str, dict[str, str]]):
             file.write(config_content)
         run_screenshot_test(
             config_file_name,
-            os.path.join(".", "data", f"{test_name}_screenshot_test.pickle"),
+            os.path.join(".", "data", platform, f"{test_name}_screenshot_test.pickle"),
             test_name=test_name
         )
     finally:

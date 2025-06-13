@@ -1,5 +1,6 @@
 import sys
 import os
+E2E_TEST_PLATFORM = "E2E_TEST_PLATFORM"
 LOCAL_PY_ENV_PATH = "LOCAL_PY_ENV_PATH"
 AAI_EXE_PATH = "AAI_EXE_PATH"
 if LOCAL_PY_ENV_PATH in os.environ:
@@ -15,6 +16,11 @@ import pickle
 from PIL import Image
 
 # TODO: reloading the AAI environment takes up most the time - share between tests?
+
+try:
+    platform = os.environ[E2E_TEST_PLATFORM]
+except KeyError:
+    raise EnvironmentError(f"Environment variable '{E2E_TEST_PLATFORM}' not set")
 
 try:
     env_path = os.environ[AAI_EXE_PATH]
@@ -136,7 +142,7 @@ def run_screenshot_test(
         difference_image = Image.fromarray(expected_camera_output_scaled - camera_output_scaled)
         
         # Create directory if it doesn't exist
-        dump_dir_name = f"{test_name}_screenshot_test_dump"
+        dump_dir_name = f"{platform}_{test_name}_screenshot_test_dump"
         os.makedirs(dump_dir_name, exist_ok=True)
         
         expected_camera_output_image.save(os.path.join(dump_dir_name, f"Expected_{test_name}.png"))
