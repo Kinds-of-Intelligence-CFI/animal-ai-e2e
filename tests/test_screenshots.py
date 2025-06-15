@@ -18,7 +18,7 @@ This test validates three things:
 def test_objects_blackout_camera():
     run_screenshot_test(
         os.path.join(".", "testConfigs", "testCrowdedArena.yml"),
-        os.path.join(".", "data", "datascreenshottest.pickle"),
+        os.path.join(".", "data", platform, "datascreenshottest.pickle"),
         test_name="crowded_arena"
     )
 
