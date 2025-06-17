@@ -49,7 +49,8 @@ def get_aai_env(
         inference=True,
         log_folder = r".",
         timescale=timescale,
-        resolution = 512
+        resolution = 512,
+        worker_id=np.random.randint(1, 101)
     )
     behavior = list(env.behavior_specs.keys())[0] # Get the first behavior name
     env.step() # Need to make a first step in order to get an observation.
