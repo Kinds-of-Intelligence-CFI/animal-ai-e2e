@@ -1,0 +1,73 @@
+name: 'Install Python 3.10.12 on Windows'
+description: 'Builds and installs Python 3.10.12 on Windows runners'
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Visual Studio Build Tools
+      uses: microsoft/setup-msbuild@v1.3
+      with:
+        msbuild-architecture: x64
+
+    - name: Download Python 3.10.12 source
+      shell: pwsh
+      run: |
+        $url = "https://www.python.org/ftp/python/3.10.12/Python-3.10.12.tar.xz"
+        $outputPath = "Python-3.10.12.tar.xz"
+        Write-Host "Downloading Python 3.10.12 source..."
+        Invoke-WebRequest -Uri $url -OutFile $outputPath
+        Write-Host "Download completed"
+
+    - name: Extract Python source
+      shell: pwsh
+      run: |
+        Write-Host "Extracting Python source..."
+        $fileInfo = Get-Item "Python-3.10.12.tar.xz"
+        Write-Host "Downloaded file size: $($fileInfo.Length) bytes"
+        7z x Python-3.10.12.tar.xz
+        7z x Python-3.10.12.tar
+        Write-Host "Extraction completed"
+        ls
+
+    - name: Build Python 3.10.12
+      shell: pwsh
+      run: |
+        cd Python-3.10.12
+        Write-Host "Starting Python build..."
+        .\PCbuild\build.bat -p x64 -c Release
+        Write-Host "Build completed"
+
+    - name: Install pip and setuptools
+      shell: pwsh
+      run: |
+        cd Python-3.10.12
+        $pythonPath = ".\PCbuild\amd64\python.exe"
+        Write-Host "Installing pip and setuptools..."
+        & $pythonPath -m ensurepip --upgrade
+        & $pythonPath -m pip install --upgrade pip setuptools
+
+    - name: Add Python to PATH
+    # Note there is an existing python install on github's windows image
+    # This just takes precendece, and does not remove, that install
+      shell: pwsh
+      run: |
+        $pythonDir = "${{ github.workspace }}\Python-3.10.12\PCbuild\amd64"
+        $pipDir = "${{ github.workspace }}\Python-3.10.12\Scripts"
+        echo "$pipDir" >> $env:GITHUB_PATH
+        echo "$pythonDir" >> $env:GITHUB_PATH
+        echo "PYTHON_HOME=$pythonDir" >> $env:GITHUB_ENV
+
+    - name: Verify Python installation
+      run: |
+        cd Python-3.10.12
+        $pythonPath = ".\PCbuild\amd64\python.exe"
+        Write-Host "Python executable path: $pythonPath"
+        & $pythonPath --version
+        & $pythonPath -c "import sys; print(f'Python {sys.version}')"
+      shell: powershell
+    
+    - name: Test Python installation with your package
+      run: |
+        python --version
+        python -c "import sys; print('Python executable:', sys.executable)"
+        python -c "print('Hello, World!')"
+      shell: powershell

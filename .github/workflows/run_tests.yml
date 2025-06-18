@@ -1,0 +1,159 @@
+name: Build and Test AAI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read      # necessary to read workspace files
+  checks: write       # allow creating/updating Check Runs
+
+jobs:
+  test-animal-ai:
+    name: Run Unity Tests on animal-ai-unity
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            os-name: linux
+            exe-path: "./build/StandaloneLinux64/StandaloneLinux64"
+            unity-targetPlatform: "StandaloneLinux64"
+          - os: windows-latest
+            os-name: windows
+            exe-path: "./build/StandaloneWindows64/StandaloneWindows64.exe"
+            unity-targetPlatform: "StandaloneWindows64"
+          - os: macos-13
+          # Pin MacOS to 13 as later versions are arm64 runners and "The actions/setup-python repository does not support x64 packages for Python <3.11 version on macOS arm64 runners due to compatibility and build issues" and arm64 3.10.12 builds are not hosted (ref: https://github.com/actions/setup-python/issues/875)
+            os-name: macos
+            exe-path: "./build/StandaloneOSX/StandaloneOSX.app"
+            unity-targetPlatform: "StandaloneOSX"
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+
+      - name: Checkout workflow repo
+        uses: actions/checkout@v3
+
+      - name: Checkout animal-ai-unity
+        uses: actions/checkout@v3
+        with:
+          repository: Kinds-of-Intelligence-CFI/animal-ai-unity
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: animal-ai-unity
+
+      # TODO: If building a new commit, checkout the latest version of the python
+      # If building for release, use pip
+
+      # - name: Run EditMode Tests
+      #   uses: game-ci/unity-test-runner@v4
+      #   env:
+      #     UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      #     UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      #     UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      #   with:
+      #     projectPath: animal-ai-unity
+      #     githubToken: ${{ secrets.GITHUB_TOKEN }}
+      #     testMode: EditMode
+
+      # - name: Run PlayMode Tests
+      #   uses: game-ci/unity-test-runner@v4
+      #   env:
+      #     UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      #     UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      #     UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      #   with:
+      #     projectPath: animal-ai-unity
+      #     githubToken: ${{ secrets.GITHUB_TOKEN }}
+      #     testMode: PlayMode
+
+      - name: Build AAI
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: animal-ai-unity
+          targetPlatform: ${{ matrix.unity-targetPlatform }}
+
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ matrix.os-name }}_build"
+          path: build
+
+      - name: Set up Python
+        if: matrix.os-name != 'windows'
+        uses: actions/setup-python@v4
+        with:
+          # AAI needs python 3.10.12 (ref: https://pypi.org/project/animalai/5.0.1/)
+          python-version: '3.10.12'
+
+      - name: Set up Python 3.10.12 on Windows
+      # Github doesn't host a 3.10.12 Windows build, so build manually
+        if: matrix.os-name == 'windows'
+        uses: ./.github/actions/install-python-windows
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install animalai numpy mlagents_envs pytest
+
+      - name: Setup Virtual Display
+        if: matrix.os-name == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+
+      - name: Checkout animal-ai-e2e
+        uses: actions/checkout@v3
+        with:
+          repository: Kinds-of-Intelligence-CFI/animal-ai-e2e
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: animal-ai-e2e
+
+      - name: Run e2e tests (Linux)
+        if: matrix.os-name == 'linux'
+        env:
+          AAI_EXE_PATH: "../${{ matrix.exe-path }}"
+          E2E_TEST_PLATFORM: ${{ matrix.os-name }}
+        shell: bash
+        run: |
+          cd animal-ai-e2e
+          CUDA_VISIBLE_DEVICES=0 xvfb-run -a python -m pytest tests/ -v
+
+      - name: Run e2e tests (Windows)
+        if: matrix.os-name == 'windows'
+        env:
+          AAI_EXE_PATH: "../${{ matrix.exe-path }}"
+          E2E_TEST_PLATFORM: ${{ matrix.os-name }}
+        shell: powershell
+        run: |
+          cd animal-ai-e2e
+          $env:CUDA_VISIBLE_DEVICES=0; python -m pytest tests/ -v
+
+      - name: Run e2e tests (macOS)
+        id: e2e-macos
+        if: matrix.os-name == 'macos'
+        env:
+          AAI_EXE_PATH: "../${{ matrix.exe-path }}"
+          E2E_TEST_PLATFORM: ${{ matrix.os-name }}
+        shell: bash
+        run: |
+          chmod -R 755 ${{ matrix.exe-path }}
+          cd animal-ai-e2e
+          CUDA_VISIBLE_DEVICES=0 python -m pytest tests/ -v
+
+      # TODO: Also upload the log file
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os-name }}-test-artifacts
+          path: animal-ai-e2e/**/*screenshot_test_dump/**
+          if-no-files-found: warn
+
+      - name: Run log reader
+        run: python log_reader.py
