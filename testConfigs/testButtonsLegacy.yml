@@ -1,4 +1,4 @@
-# A config to validate the legacy spawnerButton syntax still works
+# A basic config to test the spawnerButton
 
 !ArenaConfig
 arenas:
@@ -15,11 +15,6 @@ arenas:
       positions:
       - !Vector3 {x: 20, y: 0, z: 25}
       rotations: [90]
-      operations:
-      - !spawnObject
-        spawnable: !Item
-          name: GoodGoal
-          positions:
-          - !Vector3 {x: 20, y: 0, z: 15}
-          sizes:
-          - !Vector3 {x: 1, y: 1, z: 1}
+      rewardNames: ["GoodGoal"]
+      rewardWeights: [100]
+      rewardSpawnPos: !Vector3 {x: 20, y: 0, z: 15}
