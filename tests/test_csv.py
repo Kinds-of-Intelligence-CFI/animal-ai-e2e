@@ -3,7 +3,12 @@ import random
 from datetime import datetime
 from typing import Union, Literal, List
 
-from shared import run_behaviour_in_aai, forwards_action, AAI_EXE_PATH, E2E_TEST_PLATFORM
+from shared import (
+    run_behaviour_in_aai,
+    forwards_action,
+    AAI_EXE_PATH,
+    E2E_TEST_PLATFORM,
+)
 
 try:
     platform = os.environ[E2E_TEST_PLATFORM]
@@ -62,8 +67,12 @@ def compare_csv_file(
     try:
         csv_files_dir_path = os.path.join(
             # On macOS the application is a folder whose name ends in .app, Observation logs are written inside
-            os.environ[AAI_EXE_PATH] if platform == "macos" else os.path.dirname(os.environ[AAI_EXE_PATH]), 
-            "ObservationLogs"
+            (
+                os.environ[AAI_EXE_PATH]
+                if platform == "macos"
+                else os.path.dirname(os.environ[AAI_EXE_PATH])
+            ),
+            "ObservationLogs",
         )
         files = [
             os.path.join(csv_files_dir_path, f)

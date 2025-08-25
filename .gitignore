@@ -1,4 +1,4 @@
 __pycache__/
 .vscode/
-Player-0.log
+Player-*.log
 *_screenshot_test_dump

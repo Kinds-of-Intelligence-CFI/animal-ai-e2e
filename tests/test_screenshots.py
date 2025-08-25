@@ -15,12 +15,15 @@ This test validates three things:
 - Test if blackout camera works (i.e. a basic screenshot test)
 - Visual inputs work (i.e. a basic screenshot test)
 """
+
+
 def test_objects_blackout_camera():
     run_screenshot_test(
         os.path.join(".", "testConfigs", "testCrowdedArena.yml"),
         os.path.join(".", "data", platform, "datascreenshottest.pickle"),
-        test_name="crowded_arena"
+        test_name="crowded_arena",
     )
+
 
 test_configs = [
     "Wall",
@@ -56,8 +59,9 @@ test_configs = [
     "SpawnerButton",
     "SignPosterboard",
     "DataZone",
-    ("DataZone", {"zoneVisibility": "false"})
+    ("DataZone", {"zoneVisibility": "false"}),
 ]
+
 
 def unpack_extra_args(d: dict[str, str]):
     if not d:  # Check if dictionary is empty
@@ -69,7 +73,9 @@ def unpack_extra_args(d: dict[str, str]):
 
     return result
 
-gen_config: Callable[[str, dict[str, str]], str] = lambda object_name, optional_args : f"""
+
+gen_config: Callable[[str, dict[str, str]], str] = (
+    lambda object_name, optional_args: f"""
 !ArenaConfig
 arenas:
   0: !Arena
@@ -88,6 +94,8 @@ arenas:
       - !Vector3 {{x: 30, y: 0, z: 20}}
       rotations: [270]
 """
+)
+
 
 def get_test_name(item: str | tuple[str, dict[str, str]]) -> str:
     if isinstance(item, tuple):
@@ -96,7 +104,8 @@ def get_test_name(item: str | tuple[str, dict[str, str]]) -> str:
     else:
         return item
 
-@pytest.mark.parametrize('item', test_configs, ids=get_test_name)
+
+@pytest.mark.parametrize("item", test_configs, ids=get_test_name)
 def test_single_item_screenshot_test(item: str | tuple[str, dict[str, str]]):
     test_name = get_test_name(item)
     if isinstance(item, tuple):
@@ -111,7 +120,7 @@ def test_single_item_screenshot_test(item: str | tuple[str, dict[str, str]]):
         run_screenshot_test(
             config_file_name,
             os.path.join(".", "data", platform, f"{test_name}_screenshot_test.pickle"),
-            test_name=test_name
+            test_name=test_name,
         )
     finally:
         os.remove(config_file_name)
