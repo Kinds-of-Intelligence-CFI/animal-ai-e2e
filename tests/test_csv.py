@@ -147,7 +147,6 @@ def test_overlapping_datazones_should_combine_messages():
         os.path.join(".", "testConfigs", "testDatazoneOverlap.yml"),
         0.8,
         lambda _: forwards_action,
-        watch=True,
     )
     # Check all possible orders of writing from the data zones since we have a race condition
     file_names = [

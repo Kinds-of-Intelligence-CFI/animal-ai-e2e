@@ -16,7 +16,6 @@ def test_button_basic():
         os.path.join(".", "testConfigs", "testButtons.yml"),
         0.8,
         lambda r: backwards_action if r < -0.2 else forwards_action,
-        watch=True,
     )
 
 
@@ -25,5 +24,4 @@ def test_button_legacy():
         os.path.join(".", "testConfigs", "testButtonsLegacy.yml"),
         0.8,
         lambda r: backwards_action if r < -0.2 else forwards_action,
-        watch=True,
     )
