@@ -14,3 +14,14 @@ def test_basic_datazone():
         0.8,
         lambda _: forwards_action,
     )
+
+
+# Go through the datazone to end the episode
+def test_datazone_endepisode():
+    time_in_arena_decrement = -0.084
+    operation_decrement = -0.5
+    run_behaviour_in_aai(
+        os.path.join(".", "testConfigs", "testDatazone_endepisode.yml"),
+        time_in_arena_decrement + operation_decrement,
+        lambda _: forwards_action,
+    )

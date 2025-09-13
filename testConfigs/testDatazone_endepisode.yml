@@ -1,0 +1,24 @@
+# This is a test config file for the spawnObject operation in the datazone.
+!ArenaConfig
+arenas:
+  0: !Arena
+    passMark: 0
+    timeLimit: 100
+    items:
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 10, y: 0, z: 20}
+      rotations: [90]
+    - !Item
+      name: DataZone
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 20}
+      sizes:
+      - !Vector3 {x: 2, y: 0, z: 2}
+      rotations: [0]
+      zoneVisibility: true
+      triggerZoneID: ["Agent has entered the DataZone 1"]
+      operations:
+      - !endEpisode
+        reward: -0.5
