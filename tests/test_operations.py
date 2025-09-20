@@ -25,3 +25,12 @@ def test_datazone_endepisode():
         time_in_arena_decrement + operation_decrement,
         lambda _: forwards_action,
     )
+
+
+# Go through the datazone and get frozen on the way
+def test_datazone_freezeAgent():
+    run_behaviour_in_aai(
+        os.path.join(".", "testConfigs", "testDatazone_freezeAgent.yml"),
+        0.327,
+        lambda _: forwards_action,
+    )
