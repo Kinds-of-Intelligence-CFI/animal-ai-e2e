@@ -8,11 +8,25 @@ import os
 
 
 # Go through the datazone and collect a reward
-def test_basic_datazone():
+def test_toggle_basic_datazone():
     run_behaviour_in_aai(
         os.path.join(".", "testConfigs", "testDatazone_spawnobject.yml"),
         0.8,
         lambda _: forwards_action,
+    )
+
+
+# Go through the datazone once to spawn the reward, again to despawn
+def test_toggle_twice_datazone():
+    run_behaviour_in_aai(
+        os.path.join(".", "testConfigs", "testDatazone_spawnobject_despawnobject.yml"),
+        -1.3,
+        lambda r: (
+            (forwards_action if r < -0.175 else backwards_action)
+            if r < -0.1
+            else forwards_action
+        ),
+        watch=True,
     )
 
 
