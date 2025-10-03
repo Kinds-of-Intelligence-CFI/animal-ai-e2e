@@ -21,7 +21,7 @@ arenas:
       triggerZoneID: ["Agent has entered the DataZone 1"]
       operations:
       - !freezeAgent
-        freezeDuration: 5
+        freezeSteps: 150
     - !Item
       name: GoodGoal
       sizes:

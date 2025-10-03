@@ -26,7 +26,6 @@ def test_toggle_twice_datazone():
             if r < -0.1
             else forwards_action
         ),
-        watch=True,
     )
 
 
@@ -45,6 +44,6 @@ def test_datazone_endepisode():
 def test_datazone_freezeAgent():
     run_behaviour_in_aai(
         os.path.join(".", "testConfigs", "testDatazone_freezeAgent.yml"),
-        0.327,
+        0.533,
         lambda _: forwards_action,
     )
