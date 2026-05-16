@@ -1,14 +1,8 @@
-import sys
 import os
 
 E2E_TEST_PLATFORM = "E2E_TEST_PLATFORM"
-LOCAL_PY_ENV_PATH = "LOCAL_PY_ENV_PATH"
 AAI_EXE_PATH = "AAI_EXE_PATH"
-if LOCAL_PY_ENV_PATH in os.environ:
-    sys.path.insert(0, os.environ[LOCAL_PY_ENV_PATH])
 from animalai.environment import AnimalAIEnvironment
-import sys
-import math
 import time
 import numpy as np
 from mlagents_envs.base_env import ActionTuple, DecisionSteps, TerminalSteps

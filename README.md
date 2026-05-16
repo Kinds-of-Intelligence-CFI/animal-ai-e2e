@@ -27,9 +27,18 @@ A suite of End-to-End (E2E) tests for the Animal-AI environment. This package ai
    cd animal-ai-e2e
    ```
 
-2. Set up your environment variables:
+2. Install dependencies:
+   ```bash
+   pip install .
+   ```
+
+   2a. *(Optional)* To test against a local development copy of the Animal-AI Python package, install it as an editable install **after** step 2, so it overrides the version installed above:
+   ```bash
+   pip install -e /path/to/animal-ai-python
+   ```
+
+3. Set up your environment variables:
    - `AAI_EXE_PATH`: Path to the Animal-AI executable.
-   - `LOCAL_PY_ENV_PATH`: Path to the local copy of the Animal-AI Python package.
 
 ## Configuration
 
@@ -54,7 +63,6 @@ Create a `.vscode/.env` file to specify the required environment variables:
 
 ```env
 AAI_EXE_PATH="my/executable/path/Animal-AI.exe"
-LOCAL_PY_ENV_PATH="my/python/package/animal-ai-python"
 ```
 
 ## Usage
