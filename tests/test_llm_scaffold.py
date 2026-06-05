@@ -1,5 +1,6 @@
 import os
 
+import pytest
 from inspect_ai import Task, eval, task
 from inspect_ai.solver import (
     Solver,
@@ -16,7 +17,7 @@ from inspect_ai.model import (
 from inspect_ai.tool import ToolChoice, ToolInfo
 from inspect_ai.dataset import MemoryDataset, Sample
 from animalai.LLM_scaffolds.environment_scaffolds import FrameByFrameScaffold
-from animalai.LLM_scaffolds.inspect_wrapper import add_act_tool, total_reward_scorer
+from animalai.LLM_scaffolds.inspect_wrapper import add_act_tool, close_environment, start_animalai, total_reward_scorer
 
 
 @modelapi("forward-only")
@@ -62,6 +63,7 @@ def basic_arena_task(agent_solver: Solver | None = None) -> Task:
 
     solver_chain = [
         system_message(FrameByFrameScaffold.get_default_system_prompt()),
+        start_animalai(scaffold_type=FrameByFrameScaffold),
         add_act_tool(scaffold_type=FrameByFrameScaffold),
         agent_solver or basic_agent(),
     ]
@@ -70,13 +72,46 @@ def basic_arena_task(agent_solver: Solver | None = None) -> Task:
         dataset=dataset,
         solver=solver_chain,
         scorer=total_reward_scorer(),
+        cleanup=close_environment,
         message_limit=30,
     )
 
-def test_basic_success():
+@pytest.fixture(scope="module")
+def basic_arena_log():
+    """Run the mock-model eval once and share the log across tests (each run
+    boots Unity, so we avoid doing it per-test)."""
     logs = eval(
         [basic_arena_task()],
         model="forward-only/model",
     )
-    for log in logs:
-        assert log.status == "success"
+    return logs[0]
+
+
+def _has_image(message) -> bool:
+    content = message.content
+    if isinstance(content, str):
+        return False
+    return any(getattr(c, "type", None) == "image" for c in content)
+
+
+def test_basic_success(basic_arena_log):
+    assert basic_arena_log.status == "success"
+
+
+def test_first_frame_shown_before_first_action(basic_arena_log):
+    # start_animalai should put the initial observation in front of the model
+    # before it acts: an image must appear in the messages before the first
+    # `act` tool call. Without it, the model's first action is taken blind.
+    messages = basic_arena_log.samples[0].messages
+    first_action_idx = next(
+        (
+            i
+            for i, m in enumerate(messages)
+            if m.role == "assistant" and getattr(m, "tool_calls", None)
+        ),
+        None,
+    )
+    assert first_action_idx is not None, "expected at least one act tool call"
+    assert any(_has_image(m) for m in messages[:first_action_idx]), (
+        "initial frame was not shown before the first action"
+    )
