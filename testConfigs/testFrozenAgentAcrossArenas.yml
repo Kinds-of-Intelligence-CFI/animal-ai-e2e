@@ -1,0 +1,41 @@
+# Two arenas that both freeze the agent on spawn (frozenAgentDelays).
+#
+# Arena 0 freezes the agent for longer than the arena lasts: the agent cannot move
+# (and its health is frozen, so it cannot time out), so the episode is ended by a GoodGoal
+# dropped onto it from above, i.e. while the unfreeze countdown is still running.
+#
+# Arena 1 freezes the agent only briefly, then it should be able to drive into the goal.
+!ArenaConfig
+arenas:
+  0: !Arena
+    passMark: 0
+    timeLimit: 250
+    items:
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 20}
+      rotations: [0]
+      frozenAgentDelays: [3]
+    - !Item
+      name: GoodGoal
+      positions:
+      - !Vector3 {x: 20, y: 5, z: 20}
+      sizes:
+      - !Vector3 {x: 1, y: 1, z: 1}
+  1: !Arena
+    passMark: 0
+    timeLimit: 250
+    items:
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 20}
+      rotations: [0]
+      frozenAgentDelays: [0.2]
+    - !Item
+      name: GoodGoal
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 25}
+      sizes:
+      - !Vector3 {x: 1, y: 1, z: 1}
