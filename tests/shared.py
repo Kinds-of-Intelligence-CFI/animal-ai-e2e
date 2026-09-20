@@ -23,6 +23,9 @@ except KeyError:
     raise EnvironmentError(f"Environment variable '{AAI_EXE_PATH}' not set")
 print(f"Using env_path: {env_path}")
 
+# Rays per agent in every test environment (raysPerSide = (TOTAL_RAYS - 1) / 2)
+TOTAL_RAYS = 9
+
 
 def get_aai_env(
     configuration_file: str,
@@ -31,7 +34,6 @@ def get_aai_env(
     seed: int = int(time.time()),
     timescale: int = 10,
 ) -> tuple[str, DecisionSteps, TerminalSteps, AnimalAIEnvironment]:
-    totalRays = 9
     env = AnimalAIEnvironment(
         file_name=env_path,
         arenas_configurations=configuration_file,
@@ -40,7 +42,7 @@ def get_aai_env(
         useCamera=use_Camera,
         no_graphics=no_graphics,
         useRayCasts=True,
-        raysPerSide=int((totalRays - 1) / 2),
+        raysPerSide=int((TOTAL_RAYS - 1) / 2),
         rayMaxDegrees=30,
         inference=True,
         log_folder=r".",
