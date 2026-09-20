@@ -15,30 +15,29 @@ A suite of End-to-End (E2E) tests for the Animal-AI environment. This package ai
 
 ### Prerequisites
 
-- Python 3.10+
-- [pytest](https://docs.pytest.org/en/stable/) for running tests
+- [uv](https://docs.astral.sh/uv/) (it installs the right Python, 3.14, by itself)
 - VSCode for integrated development (optional but recommended)
 
 ### Setup
 
-1. Clone the repository:
+1. Clone this repository **next to a checkout of `animal-ai-python`**: the uv environment installs the
+   Animal-AI Python package from `../animal-ai-python` (editable), so tests run against your local copy.
    ```bash
    git clone https://github.com/Kinds-of-Intelligence-CFI/animal-ai-e2e.git
+   git clone https://github.com/Kinds-of-Intelligence-CFI/animal-ai-python.git
    cd animal-ai-e2e
    ```
+   To use the released `animalai` package from PyPI instead, delete the `animalai = ...` line under
+   `[tool.uv.sources]` in `pyproject.toml`.
 
-2. Install dependencies:
+2. Create the environment:
    ```bash
-   pip install .
-   ```
-
-   2a. *(Optional)* To test against a local development copy of the Animal-AI Python package, install it as an editable install **after** step 2, so it overrides the version installed above:
-   ```bash
-   pip install -e /path/to/animal-ai-python
+   uv sync
    ```
 
 3. Set up your environment variables:
    - `AAI_EXE_PATH`: Path to the Animal-AI executable.
+   - `E2E_TEST_PLATFORM`: `windows`, `linux` or `macos`.
 
 ## Configuration
 
@@ -63,19 +62,22 @@ Create a `.vscode/.env` file to specify the required environment variables:
 
 ```env
 AAI_EXE_PATH="my/executable/path/Animal-AI.exe"
+E2E_TEST_PLATFORM="windows"
 ```
+
+To use the same file from the command line, pass it to uv: `uv run --env-file .vscode/.env pytest`.
 
 ## Usage
 
 Run the tests using pytest:
 
 ```bash
-pytest
+uv run pytest
 ```
 
 You can also run a specific test file, i.e., `test_general.py`:
 ```bash
-pytest tests/test_general.py
+uv run pytest tests/test_general.py
 ```
 
 ## Repository TODOs

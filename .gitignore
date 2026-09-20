@@ -1,4 +1,9 @@
 __pycache__/
+.venv/
 .vscode/
 Player-*.log
 *_screenshot_test_dump
+# Inspect eval logs written by tests/test_llm_scaffold.py
+logs/
+# Camera frames saved by tests/test_multi_agent.py in watch mode
+multi_agent_watch/
