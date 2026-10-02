@@ -9,6 +9,7 @@ from mlagents_envs.base_env import ActionTuple, DecisionSteps, TerminalSteps
 from typing import Callable, Optional
 import pickle
 from PIL import Image
+from screenshot_compare import compare_screenshots
 
 # TODO: reloading the AAI environment takes up most the time - share between tests?
 
@@ -136,16 +137,23 @@ def run_screenshot_test(
     with open(expected_screenshot_path, "rb") as file:
         # Deserialize and load the object from the file
         expected_camera_output = pickle.load(file)
-    try:
-        np.testing.assert_array_equal(expected_camera_output, camera_output)
-    except AssertionError as e:
+    comparison = compare_screenshots(expected_camera_output, camera_output)
+    if not comparison.passed:
         scale_image = lambda image: np.array(image * 255, dtype=np.uint8)
         expected_camera_output_scaled = scale_image(expected_camera_output)
         camera_output_scaled = scale_image(camera_output)
         expected_camera_output_image = Image.fromarray(expected_camera_output_scaled)
         camera_output_image = Image.fromarray(camera_output_scaled)
+        # Widen before subtracting so negative differences don't wrap around
         difference_image = Image.fromarray(
-            expected_camera_output_scaled - camera_output_scaled
+            np.abs(
+                expected_camera_output_scaled.astype(np.int16)
+                - camera_output_scaled.astype(np.int16)
+            ).astype(np.uint8)
+        )
+        # Bright where the local SSIM is low, i.e. where the screenshots differ structurally
+        ssim_difference_image = Image.fromarray(
+            scale_image(np.clip(1 - comparison.ssim_map, 0, 1))
         )
 
         # Create directory if it doesn't exist
@@ -161,9 +169,12 @@ def run_screenshot_test(
         difference_image.save(
             os.path.join(dump_dir_name, f"Difference_{test_name}.png")
         )
+        ssim_difference_image.save(
+            os.path.join(dump_dir_name, f"SSIMDifference_{test_name}.png")
+        )
         # Save pickle file for debugging
         with open(
             os.path.join(dump_dir_name, f"{test_name}_screenshot_test.pickle"), "wb"
         ) as f:
             pickle.dump(camera_output, f)
-        raise e
+        raise AssertionError(f"Screenshot differs from {expected_screenshot_path}: {comparison}")

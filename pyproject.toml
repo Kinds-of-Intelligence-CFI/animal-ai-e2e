@@ -9,6 +9,7 @@ dependencies = [
     "numpy",
     "pillow",
     "pytest",
+    "scikit-image",  # SSIM for screenshot comparison
 ]
 
 [tool.uv]
