@@ -26,31 +26,22 @@ jobs:
     name: Run Unity Tests on animal-ai-unity
     strategy:
       fail-fast: false
-      # build-name and release-name reproduce the layout of the animal-ai release zips,
-      # e.g. Linux.zip contains Linux/animalAI.x86_64 and Linux/animalAI_Data/
       matrix:
         include:
           - os: ubuntu-latest
             os-name: linux
-            # unity-builder appends .x86_64 for Linux builds
-            build-name: "animalAI"
-            release-name: "Linux"
-            exe-path: "./build/StandaloneLinux64/animalAI.x86_64"
+            exe-path: "./build/StandaloneLinux64/StandaloneLinux64.x86_64"
             unity-targetPlatform: "StandaloneLinux64"
           - os: windows-2022
           # The unityci/editor Windows images are Server 2022, which won't run on the
           # Server 2025 windows-latest (ref: https://github.com/game-ci/unity-builder/issues/766)
             os-name: windows
-            build-name: "Animal-AI"
-            release-name: "Windows"
-            exe-path: "./build/StandaloneWindows64/Animal-AI.exe"
+            exe-path: "./build/StandaloneWindows64/StandaloneWindows64.exe"
             unity-targetPlatform: "StandaloneWindows64"
           - os: macos-15-intel
           # Intel (x64) runner, like the retired macos-13 this job used to run on
             os-name: macos
-            build-name: "MacOS"
-            release-name: "MacOS"
-            exe-path: "./build/StandaloneOSX/MacOS.app"
+            exe-path: "./build/StandaloneOSX/StandaloneOSX.app"
             unity-targetPlatform: "StandaloneOSX"
 
     runs-on: ${{ matrix.os }}
@@ -106,10 +97,35 @@ jobs:
       #     githubToken: ${{ secrets.GITHUB_TOKEN }}
       #     testMode: PlayMode
 
-      # v5 rather than v6: v6 downloads and runs the latest game-ci/cli release at build
-      # time, so pinning the action wouldn't pin the code that builds AAI
+      # Docker is installed on the Windows runners but the daemon isn't running at job start
+      # (same readiness step as unity-builder's own Windows workflow)
+      - name: Start Docker daemon
+        if: matrix.os-name == 'windows'
+        timeout-minutes: 2
+        shell: powershell
+        run: |
+          $maxRetries = 10
+          for ($i = 0; $i -lt $maxRetries; $i++) {
+            $svc = Get-Service docker -ErrorAction SilentlyContinue
+            if ($svc -and $svc.Status -eq 'Running') {
+              docker version 2>$null
+              if ($LASTEXITCODE -eq 0) { Write-Host "Docker is ready."; exit 0 }
+            }
+            if ($svc -and $svc.Status -eq 'Stopped') {
+              Write-Host "Docker service stopped, attempting to start..."
+              Start-Service docker -ErrorAction SilentlyContinue
+            }
+            Write-Host "Waiting for Docker daemon (attempt $($i+1)/$maxRetries)..."
+            Start-Sleep -Seconds 6
+          }
+          Write-Error "Docker daemon did not start within $($maxRetries * 6) seconds"
+          exit 1
+
+      # v6 downloads and runs the game-ci/cli release named by cliVersion at build time.
+      # Pinning cliVersion keeps runs consistent, but tags and release files can still be
+      # changed upstream, so builds from this workflow are for testing only, not releases.
       - name: Build AAI
-        uses: game-ci/unity-builder@adaf7cd8f42fd48fbbf2d4f5f67ca30d87f819f1 # v5.0.1
+        uses: game-ci/unity-builder@eb1b9fba120c6e62c9fb7a7a81d6c107ce004c45 # v6.0.0
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -117,38 +133,13 @@ jobs:
         with:
           projectPath: animal-ai-unity
           targetPlatform: ${{ matrix.unity-targetPlatform }}
-          buildName: ${{ matrix.build-name }}
+          cliVersion: v0.1.71
 
-      # Package before the tests run, so files the player writes while testing
-      # (e.g. ObservationLogs) don't end up in the zip
-      - name: Package build as a release zip
-        shell: bash
-        env:
-          BUILD_DIR: build/${{ matrix.unity-targetPlatform }}
-          EXE_PATH: ${{ matrix.exe-path }}
-          RELEASE_NAME: ${{ matrix.release-name }}
-        run: |
-          test -e "$EXE_PATH" || { echo "Expected $EXE_PATH in the build:"; ls -la "$BUILD_DIR"; exit 1; }
-          mkdir release
-          cp -R "$BUILD_DIR" "release/$RELEASE_NAME"
-          # Unity's debug-symbol folders aren't shipped in releases
-          rm -rf release/"$RELEASE_NAME"/*_DoNotShip release/"$RELEASE_NAME"/*_ButDontShipItWithYourGame
-          cd release
-          if [ "$RUNNER_OS" = "Windows" ]; then
-            7z a -tzip "$RELEASE_NAME.zip" "$RELEASE_NAME"
-          else
-            # zip -y keeps symlinks (used inside the macOS .app) and Unix permissions
-            zip -qry "$RELEASE_NAME.zip" "$RELEASE_NAME"
-          fi
-          ls -la
-
-      # archive: false uploads the zip as-is, so the artifact downloads as e.g. Linux.zip
-      # (the artifact is named after the file) instead of a zip inside a zip
-      - name: Upload release zip
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          path: release/${{ matrix.release-name }}.zip
-          archive: false
+      # The Linux build runs in Docker as root, so build/ is root-owned. The player writes next
+      # to its executable (e.g. ObservationLogs/), so the runner user needs to own it.
+      - name: Make the Linux build writable
+        if: matrix.os-name == 'linux'
+        run: sudo chown -R "$USER":"$(id -gn)" build
 
       # uv is pinned to a version this setup-uv release has a checksum for, so the
       # download is verified
