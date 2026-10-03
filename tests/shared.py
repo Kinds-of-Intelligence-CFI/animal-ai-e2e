@@ -46,7 +46,8 @@ def get_aai_env(
         raysPerSide=int((TOTAL_RAYS - 1) / 2),
         rayMaxDegrees=30,
         inference=True,
-        log_folder=r".",
+        # Absolute, so the player doesn't depend on how it resolves a relative -logFile path
+        log_folder=os.path.abspath("."),
         timescale=timescale,
         resolution=512,
         worker_id=np.random.randint(1, 101),

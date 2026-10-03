@@ -18,6 +18,7 @@ from inspect_ai.tool import ToolChoice, ToolInfo
 from inspect_ai.dataset import MemoryDataset, Sample
 from animalai.LLM_scaffolds.environment_scaffolds import FrameByFrameScaffold
 from animalai.LLM_scaffolds.inspect_wrapper import add_act_tool, close_environment, start_animalai, total_reward_scorer
+from shared import env_path
 
 
 @modelapi("forward-only")
@@ -55,7 +56,9 @@ def basic_arena_task(agent_solver: Solver | None = None) -> Task:
         Sample(
             input="Please path to the goal area marked by the green object.",
             metadata={
-                "arenas_configurations": os.path.join("testconfigs","testUnmergedArenas.yml"),
+                # Use the executable under test, rather than searching for ./env/ or a cached download
+                "file_name": env_path,
+                "arenas_configurations": os.path.join("testConfigs", "testUnmergedArenas.yml"),
                 "no_graphics": False,
             },
             )
