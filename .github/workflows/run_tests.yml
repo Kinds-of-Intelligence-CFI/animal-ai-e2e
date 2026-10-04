@@ -138,11 +138,13 @@ jobs:
           # commit, not one in animal-ai-unity, so it fails. Test builds don't need a version.
           versioning: None
 
-      # The Linux build runs in Docker as root, so build/ is root-owned. The player writes next
-      # to its executable (e.g. ObservationLogs/), so the runner user needs to own it.
-      - name: Make the Linux build writable
+      # The Linux build runs in Docker as root, with the runner's home mounted as /root, so
+      # build/ and anything Unity creates under $HOME (e.g. ~/.local/share) end up root-owned.
+      # The player writes next to its executable (e.g. ObservationLogs/) and the tests write
+      # under $HOME (e.g. ~/.local/share/inspect_ai), so the runner user needs to own both.
+      - name: Make files from the Linux build writable
         if: matrix.os-name == 'linux'
-        run: sudo chown -R "$USER":"$(id -gn)" build
+        run: sudo chown -R "$USER":"$(id -gn)" build "$HOME"
 
       # uv is pinned to a version this setup-uv release has a checksum for, so the
       # download is verified
