@@ -1,0 +1,68 @@
+# Arenas with 3, 1, 2 and 4 agents, for tests/test_multi_agent.py. Agent k (the k-th Agent item) spawns at
+# x = 4 + 6k, so an agent's position tells the test which Agent item it is. Between arenas, agents sit out
+# (arena 1) and come back (arenas 2 and 3), which is when ML-Agents gives them new agent_ids.
+
+!ArenaConfig
+arenas:
+  0: !Arena
+    timeLimit: 100
+    items:
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 4, y: 0, z: 20}
+      rotations: [0]
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 10, y: 0, z: 20}
+      rotations: [0]
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 16, y: 0, z: 20}
+      rotations: [0]
+  1: !Arena
+    timeLimit: 100
+    items:
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 4, y: 0, z: 20}
+      rotations: [0]
+  2: !Arena
+    timeLimit: 100
+    items:
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 4, y: 0, z: 20}
+      rotations: [0]
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 10, y: 0, z: 20}
+      rotations: [0]
+  3: !Arena
+    timeLimit: 100
+    items:
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 4, y: 0, z: 20}
+      rotations: [0]
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 10, y: 0, z: 20}
+      rotations: [0]
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 16, y: 0, z: 20}
+      rotations: [0]
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 22, y: 0, z: 20}
+      rotations: [0]

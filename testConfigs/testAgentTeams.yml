@@ -1,0 +1,88 @@
+# Agents on alternating teams (even Agent items on team 0, odd on team 1), for tests/test_multi_agent.py.
+# Agent k spawns at x = 4 + 6k, so an agent's position tells the test which Agent item it is. Agents 2 and 3
+# sit out arena 1; the reset into arena 2 brings them back and creates agents 4 and 5 for the first time,
+# the case that once put returning agents' rows after the new agents'.
+
+!ArenaConfig
+arenas:
+  0: !Arena
+    timeLimit: 100
+    items:
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 4, y: 0, z: 20}
+      rotations: [0]
+      teams: [0]
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 10, y: 0, z: 20}
+      rotations: [0]
+      teams: [1]
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 16, y: 0, z: 20}
+      rotations: [0]
+      teams: [0]
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 22, y: 0, z: 20}
+      rotations: [0]
+      teams: [1]
+  1: !Arena
+    timeLimit: 100
+    items:
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 4, y: 0, z: 20}
+      rotations: [0]
+      teams: [0]
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 10, y: 0, z: 20}
+      rotations: [0]
+      teams: [1]
+  2: !Arena
+    timeLimit: 100
+    items:
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 4, y: 0, z: 20}
+      rotations: [0]
+      teams: [0]
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 10, y: 0, z: 20}
+      rotations: [0]
+      teams: [1]
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 16, y: 0, z: 20}
+      rotations: [0]
+      teams: [0]
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 22, y: 0, z: 20}
+      rotations: [0]
+      teams: [1]
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 28, y: 0, z: 20}
+      rotations: [0]
+      teams: [0]
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 34, y: 0, z: 20}
+      rotations: [0]
+      teams: [1]
