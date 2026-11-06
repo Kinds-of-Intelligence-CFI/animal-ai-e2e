@@ -1,0 +1,34 @@
+# Agent zones are blocked by walls: the mother's zone reaches 6m, and the infant walks up to a wall
+# 4m from her, well inside the radius, but the wall is between them so the infant is never
+# rewarded. Used by tests/test_agent_zones.py.
+
+!ArenaConfig
+arenas:
+  0: !Arena
+    timeLimit: 250
+    items:
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 24}
+      rotations: [0]
+      zone:
+        radius: 6
+        triggerZoneID: mother
+        operations:
+        - !grantContinuousReward
+          rewardPerStep: 0.01
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 12}
+      rotations: [0]
+    - !Item
+      name: Wall
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 20}
+      rotations: [0]
+      sizes:
+      - !Vector3 {x: 8, y: 3, z: 0.5}
+      colors:
+      - !RGB {r: 153, g: 153, b: 153}

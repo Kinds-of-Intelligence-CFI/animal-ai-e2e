@@ -1,0 +1,34 @@
+# Agent zones can spawn objects: when the infant (agent 1) comes within 4m of the mother (agent 0),
+# a GoodGoal appears on the ground between them, which the infant collects as it carries on walking
+# and so ends the episode with a reward of +1. Used by tests/test_agent_zones.py.
+# (The goal is placed on the ground, not dropped: the infant covers about 0.7m a step and would walk
+# under a falling goal.)
+
+!ArenaConfig
+arenas:
+  0: !Arena
+    timeLimit: 250
+    items:
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 24}
+      rotations: [0]
+      zone:
+        radius: 4
+        triggerZoneID: mother
+        operations:
+        - !toggleObject
+          objectInitiallyPresent: false
+          spawnAndForget: true
+          spawnable: !Item
+            name: GoodGoal
+            sizes:
+            - !Vector3 {x: 1, y: 1, z: 1}
+            positions:
+            - !Vector3 {x: 20, y: 0, z: 22}
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 12}
+      rotations: [0]

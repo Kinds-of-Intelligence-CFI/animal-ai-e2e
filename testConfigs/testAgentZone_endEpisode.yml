@@ -1,0 +1,26 @@
+# Agent zones: a "predator" (agent 0) whose zone ends the episode of any agent that touches it,
+# with a reward of -1. The "prey" (agent 1) walks straight into it. Used by tests/test_agent_zones.py.
+#
+# radius 0.5 is the minimum: the agents' bodies have radius 0.5, so the zone fires when they touch.
+
+!ArenaConfig
+arenas:
+  0: !Arena
+    timeLimit: 250
+    items:
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 24}
+      rotations: [0]
+      zone:
+        radius: 0.5
+        triggerZoneID: predator
+        operations:
+        - !endEpisode
+          reward: -1
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 14}
+      rotations: [0]

@@ -25,6 +25,14 @@ def test_objects_blackout_camera():
     )
 
 
+agent_zone: Callable[[str], str] = (
+    lambda visible: f"""
+        radius: 3
+        zoneVisibility: {visible}
+        operations:
+        - !noneOperation {{}}"""
+)
+
 test_configs = [
     "Wall",
     ("Wall", {"colors": "\n      - !RGB {r: 137, g: 207, b: 240}"}),
@@ -60,6 +68,10 @@ test_configs = [
     "SignPosterboard",
     "DataZone",
     ("DataZone", {"zoneVisibility": "false"}),
+    # An agent carrying a zone, seen by the observer agent: drawn and not. A fixed skin keeps the image
+    # deterministic. The observer agent is listed first in the config, so it stays agent 0 (the camera).
+    ("Agent", {"skins": "[panda]", "zone": agent_zone(visible="true")}, "AgentZone_zoneVisibility"),
+    ("Agent", {"skins": "[panda]", "zone": agent_zone(visible="false")}, "AgentZone"),
 ]
 
 
@@ -82,23 +94,28 @@ arenas:
     timeLimit: 5
     items:
     - !Item
+      name: Agent
+      positions:
+      - !Vector3 {{x: 30, y: 0, z: 20}}
+      rotations: [270]
+    - !Item
       name: {object_name}
       positions:
       - !Vector3 {{x: 20, y: 0, z: 20}}
       rotations: [0]
       sizes:
       - !Vector3 {{x: 1, y: 1, z: 1}}{unpack_extra_args(optional_args)}
-    - !Item
-      name: Agent
-      positions:
-      - !Vector3 {{x: 30, y: 0, z: 20}}
-      rotations: [270]
 """
 )
 
 
-def get_test_name(item: str | tuple[str, dict[str, str]]) -> str:
+TestConfig = str | tuple[str, dict[str, str]] | tuple[str, dict[str, str], str]
+
+
+def get_test_name(item: TestConfig) -> str:
     if isinstance(item, tuple):
+        if len(item) == 3:
+            return item[2]
         item_name, args = item
         return f"{item_name}_{'_'.join(f'{k}' for k in args.keys())}"
     else:
@@ -106,10 +123,10 @@ def get_test_name(item: str | tuple[str, dict[str, str]]) -> str:
 
 
 @pytest.mark.parametrize("item", test_configs, ids=get_test_name)
-def test_single_item_screenshot_test(item: str | tuple[str, dict[str, str]]):
+def test_single_item_screenshot_test(item: TestConfig):
     test_name = get_test_name(item)
     if isinstance(item, tuple):
-        item_name, args = item
+        item_name, args = item[0], item[1]
     else:
         item_name, args = item, {}
     config_content = gen_config(item_name, args)

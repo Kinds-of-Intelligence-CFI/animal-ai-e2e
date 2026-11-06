@@ -1,0 +1,31 @@
+# Agent zones: a "mother" (agent 0) rewards any agent within 4m of her every step. The "infant"
+# (agent 1) starts 12m away, facing her, and walks forwards into the zone. Used by
+# tests/test_agent_zones.py.
+#
+# The time penalty is -1/(250*5) per physics step; the zone pays +0.01 per physics step, so the
+# infant's cumulative reward turns clearly positive once it is inside, while the mother's never does
+# (a zone never acts on the agent carrying it).
+
+!ArenaConfig
+arenas:
+  0: !Arena
+    timeLimit: 250
+    items:
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 24}
+      rotations: [0]
+      skins: [panda]
+      zone:
+        radius: 4
+        triggerZoneID: mother
+        operations:
+        - !grantContinuousReward
+          rewardPerStep: 0.01
+    - !Item
+      name: Agent
+      positions:
+      - !Vector3 {x: 20, y: 0, z: 12}
+      rotations: [0]
+      skins: [hedgehog]
